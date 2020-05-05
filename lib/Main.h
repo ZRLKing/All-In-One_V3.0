@@ -139,7 +139,7 @@ void delay(int ms);
 void StopScript(void);
 void SwitchScript(void);
 void SetupButtons(void);
-void SwitchButton(char button);
+void SwitchButton(void);
 void PressButton(void);
 void SwitchLED(void);
 void FlashLED(void);
@@ -149,21 +149,37 @@ void PgmInit(void);
 void ReadEepData(void);
 void WriteEepData(int address,long num);
 void IsRunning(void);
+void SwitchPointer(char x1,char x2,char y1,char y2);
 void SwitchState(void);
+
 void SwitchBox(void);
 void SwitchCycle(void);
-void SwitchFrame(char x);
+void SwitchFrame(void);
 void SwitchCopy(void);
 void SwitchAutoRelease(void);
 void SwitchSpeed(void);
 void SwitchLastFrame(void);
 void SwitchSkipWait(void);
 void SwitchDriveWait(void);
-void SwitchPassword(char x);
+void SwitchPassword(void);
 void SwitchAdd(void);
-void SwitchInfUsed(void);
+void SwitchOthers(void);
+void SwitchAnimalCrossing(void);
 void SwitchLockMode(void);
-//void NumToStr(int num, char str[]);
+/*
+void CycleOLED(void);
+void BoxOLED(void);
+void FrameOLED(void);
+void SkipWaitOLED(void);
+void DriveWaitOLED(void);
+void PasswordOLED(void);
+void LastFrameOLED(void);
+void AddOLED(void);
+void CopyOLED(void);
+*/
+
+void SwitchVariable(void(*Func)(void),int speed);
+void NumToStr(long num,char str[]);
 void RefreshProgress(void);
 long GetDuration(const command script[]);
 // Function Prototypes

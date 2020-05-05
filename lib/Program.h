@@ -1,8 +1,8 @@
-//extern char AutoPause;
 extern char ScriptNum;
 extern signed char CycleNum;
 extern int BoxNum;
-extern char InfUsedNum;
+extern char OthersNum;
+extern char AnimalCrossingNum;
 extern long FrameNum;
 extern signed char SkipWaitNum;
 extern signed char LastFrameNum;
@@ -12,7 +12,7 @@ extern signed char AddNum;
 extern char SkipMode;
 extern char SpeedUp;
 extern char LockMode;
-extern char AutoRelease;
+extern signed char AutoRelease;
 extern long CopyNum;
 extern long SizeofSync;
 extern long SizeofCollect;
@@ -45,7 +45,8 @@ void Driving(void);
 //void SkipAndDrive(void);
 //void DriveOpration(void);
 void Copying(void);
-void InfUsed(void);
+void Others(void);
+void AnimalCrossing(void);
 void PressA(void);
 void PressY(void);
 void LuckDraw(void);
@@ -54,6 +55,8 @@ void CollectBerry(void);
 void AutoSalesman(void);
 void HeadwearBattle(void);
 void PokeJob(void);
+void Exchanging(void);
+void AnimalTravel(void);
 
 /////////////////////////模块区/////////////////////////
 
@@ -94,10 +97,15 @@ static const command CollectMove[] PROGMEM = {
     {SCRIPT_END, 0},
 };
 
-//取蛋对话
-static const command GetEgg[] PROGMEM = {
+//取蛋最后一次移动
+static const command CollectLastMove[] PROGMEM = {
     {UPRIGHT, 3},
     {PAUSE, 10},
+    {SCRIPT_END, 0},
+};
+
+//取蛋对话
+static const command GetEgg[] PROGMEM = {
     {A, 2},
     {PAUSE, 50},
     {A, 2},
@@ -636,8 +644,8 @@ static const command BoxOperation7[] PROGMEM = {
     {SCRIPT_END, 0},
 };
 
-//放生并向下移动
-static const command ReleaseDown[] PROGMEM = {
+//放生
+static const command Release[] PROGMEM = {
     {A, 2},
     {PAUSE, 20},
     {UP, 2},
@@ -649,81 +657,15 @@ static const command ReleaseDown[] PROGMEM = {
     {UP, 2},
     {PAUSE, 5},
     {A, 2},
-    {PAUSE, 60},
+    {PAUSE, 50},
     {A, 2},
-    {PAUSE, 20},
-    {DOWN, 2},
-    {PAUSE, 5},
+    {PAUSE, 10},
     {SCRIPT_END, 0},
 };
 
-//放生并向上移动
-static const command ReleaseUP[] PROGMEM = {
-    {A, 2},
-    {PAUSE, 20},
-    {UP, 2},
-    {PAUSE, 5},
-    {UP, 2},
-    {PAUSE, 5},
-    {A, 2},
-    {PAUSE, 30},
-    {UP, 2},
-    {PAUSE, 5},
-    {A, 2},
-    {PAUSE, 60},
-    {A, 2},
-    {PAUSE, 20},
-    {UP, 2},
-    {PAUSE, 5},
-    {SCRIPT_END, 0},
-};
-
-//放生并向右移动
-static const command ReleaseRight[] PROGMEM = {
-    {A, 2},
-    {PAUSE, 20},
-    {UP, 2},
-    {PAUSE, 5},
-    {UP, 2},
-    {PAUSE, 5},
-    {A, 2},
-    {PAUSE, 30},
-    {UP, 2},
-    {PAUSE, 5},
-    {A, 2},
-    {PAUSE, 60},
-    {A, 2},
-    {PAUSE, 20},
-    {RIGHT, 2},
-    {PAUSE, 5},
-    {SCRIPT_END, 0},
-};
-
-//放生并切换下一箱
+//切换下一箱
 static const command ReleaseReset[] PROGMEM = {
-    {A, 2},
-    {PAUSE, 20},
-    {UP, 2},
-    {PAUSE, 5},
-    {UP, 2},
-    {PAUSE, 5},
-    {A, 2},
-    {PAUSE, 30},
-    {UP, 2},
-    {PAUSE, 5},
-    {A, 2},
-    {PAUSE, 60},
-    {A, 2},
-    {PAUSE, 20},
-    {LEFT, 2},
-    {PAUSE, 5},
-    {LEFT, 2},
-    {PAUSE, 5},
-    {LEFT, 2},
-    {PAUSE, 5},
-    {LEFT, 2},
-    {PAUSE, 5},
-    {LEFT, 2},
+    {RIGHT, 2},
     {PAUSE, 5},
     {R, 2},
     {PAUSE, 30},
@@ -807,7 +749,7 @@ static const command SkipBack[] PROGMEM = {
 //跳帧
 static const command Skip[] PROGMEM = {
     {A, 2},
-    {PAUSE, 7},
+    {PAUSE, 8},
     {RLEFT, 2},
     {PAUSE, 1},
     {LEFT, 2},
@@ -823,11 +765,11 @@ static const command Skip[] PROGMEM = {
     {RIGHT, 2},
     {PAUSE, 1},
     {A, 2},
-    {PAUSE, 7},
+    {PAUSE, 8},
     {SCRIPT_END, 0},
 };
 
-//跳帧修复
+//跳帧高速
 static const command SkipFast[] PROGMEM = {
     {A, 10},
     {PAUSE, 30},
@@ -855,7 +797,7 @@ static const command GotoGame[] PROGMEM = {
     {HOME, 2},
     {PAUSE, 50},
     {A, 2},
-    {PAUSE, 80},
+    {PAUSE, 60},
     {SCRIPT_END, 0},
 };
 
@@ -895,11 +837,12 @@ static const command NextRecruit[] PROGMEM = {
     {PAUSE, 30},
     {A, 2},
     {PAUSE, 200},
+    {PAUSE, 20},
     {A, 2},
     {PAUSE, 30},
     {B, 2},
-    {PAUSE, 30},
-    {B, 2},
+    {PAUSE, 60},
+    {A, 2},
     {PAUSE, 50},
     {A, 2},
     {PAUSE, 120},
@@ -912,6 +855,7 @@ static const command ExitRecruit[] PROGMEM = {
     {PAUSE, 30},
     {A, 2},
     {PAUSE, 200},
+    {PAUSE, 20},
     {SCRIPT_END, 0},
 };
 
@@ -1158,8 +1102,6 @@ static const command AddFriends[] PROGMEM = {
 
 //复制取蛋
 static const command CopyGetEgg[] PROGMEM = {
-    {UPRIGHT, 3},
-    {PAUSE, 10},
     {A, 2},
     {PAUSE, 50},
     {A, 2},
@@ -1199,6 +1141,19 @@ static const command CopyRelease[] PROGMEM = {
     {PAUSE, 5},
     {A, 2},
     {PAUSE, 60},
+    {A, 2},
+    {PAUSE, 20},
+    {SCRIPT_END, 0},
+};
+
+//替换闪蛋
+static const command ChangeEgg[] PROGMEM = {
+    {A, 2},
+    {PAUSE, 30},
+    {A, 2},
+    {PAUSE, 20},
+    {LEFT, 2},
+    {PAUSE, 5},
     {A, 2},
     {PAUSE, 20},
     {SCRIPT_END, 0},
@@ -1259,6 +1214,8 @@ static const command StartJob[] PROGMEM = {
     {X, 2},
     {PAUSE, 30},
     {B, 2},
+    {PAUSE, 30},
+    {A, 2},
     {PAUSE, 100},
     {A, 2},
     {PAUSE, 30},
@@ -1452,6 +1409,62 @@ static const command Rotomi[] PROGMEM = {
     {SCRIPT_END, 0},
 };
 
+//旅行
+static const command Travel[] PROGMEM = {
+    {RIGHT, 10},
+    {A, 2},
+    {B, 60},
+    {A, 2},
+    {PAUSE, 30},
+    {A, 2},
+    {B, 60},
+    {A, 2},
+    {PAUSE, 30},
+    {A, 2},
+    {B, 60},
+    {A, 2},
+    {PAUSE, 200},
+    {PAUSE, 200},
+    {PAUSE, 200},
+    {PAUSE, 50},
+    {RIGHT, 50},
+    {UP, 10},
+    {A, 2},
+    {B, 80},
+    {A, 2},
+    {PAUSE, 30},
+    {A, 2},
+    {B, 50},
+    {A, 2},
+    {B, 50},
+    {A, 2},
+    {B, 50},
+    {A, 2},
+    {PAUSE, 30},
+    {DOWN, 2},
+    {PAUSE, 5},
+    {A, 2},
+    {B, 50},
+    {A, 2},
+    {B, 50},
+    {A, 2},
+    {PAUSE, 30},
+    {A, 2},
+    {B, 200},
+    {B, 200},
+    {B, 50},
+    {A, 2},
+    {B, 200},
+    {B, 200},
+    {B, 200},
+    {A, 2},
+    {B, 50},
+    {A, 2},
+    {B, 30},
+    {A, 2},
+    {SCRIPT_END, 0},
+};
+
 //等待5秒
 static const command PAUSE5[] PROGMEM = {
     {PAUSE, 200},
@@ -1476,6 +1489,27 @@ static const command A30[] PROGMEM = {
 static const command B30[] PROGMEM = {
     {B, 2},
     {PAUSE, 30},
+    {SCRIPT_END, 0},
+};
+
+//UP5
+static const command UP5[] PROGMEM = {
+    {UP, 2},
+    {PAUSE, 5},
+    {SCRIPT_END, 0},
+};
+
+//DOWN5
+static const command DOWN5[] PROGMEM = {
+    {DOWN, 2},
+    {PAUSE, 5},
+    {SCRIPT_END, 0},
+};
+
+//RIGHT5
+static const command RIGHT5[] PROGMEM = {
+    {RIGHT, 2},
+    {PAUSE, 5},
     {SCRIPT_END, 0},
 };
 
@@ -1518,7 +1552,13 @@ void PgmStart()
         Copying();
         break;
     case 9:
-        InfUsed();
+        Exchanging();
+        break;
+    case 10:
+        Others();
+        break;
+    case 11:
+        AnimalCrossing();
         break;
     default:
         break;
@@ -1561,6 +1601,7 @@ void CollectAndHatch()
     //取蛋 成功率约70%
     LOOP_START((BoxNum * 43))
     RunScript(CollectMove, 3);
+    RunScript(CollectLastMove, 1);
     RunScript(GetEgg, 1);
     LOOP_END
     //过渡操作
@@ -1573,34 +1614,13 @@ void CollectAndHatch()
     PROGRAM_END
 }
 
-/*
-//取蛋并孵化(420个左右&41周期)
-void CollectAndHatch41()
-{
-LOOP_START(600)
-  Collecting();
-LOOP_END
-RunScript(CollectToHatch,1);
-RunScript(ReleaseDown,5);
-RunStep(B,2);
-RunStep(PAUSE,80);
-RunStep(B,2);
-RunStep(PAUSE,80);
-RunStep(B,2);
-RunStep(PAUSE,80);
-LOOP_START(14)
-  Hatching41();
-LOOP_END
-PROGRAM_END
-}
-*/
-
 //取蛋
 void Collecting()
 {
     SizeofPgm = SizeofCollect * BoxNum * 43;
     LOOP_START((BoxNum * 43))
     RunScript(CollectMove, 3);
+    RunScript(CollectLastMove, 1);
     RunScript(GetEgg, 1);
     LOOP_END
     PROGRAM_END
@@ -1723,10 +1743,11 @@ void HatchOperation()
 //放生
 void Releasing()
 {
-    SizeofPgm = SizeofSync + SizeofRelease * BoxNum;
+    SizeofPgm = SizeofSync + (SizeofRelease + GetDuration(ReleaseReset)) * BoxNum;
     RunScript(Sync, 5);
     LOOP_START(BoxNum)
     ReleaseOperation();
+    RunScript(ReleaseReset, 1);
     LOOP_END
     PROGRAM_END
 }
@@ -1734,28 +1755,29 @@ void Releasing()
 //放生操作
 void ReleaseOperation()
 {
-    RunScript(ReleaseDown, 4);
-    RunScript(ReleaseRight, 1);
-    RunScript(ReleaseUP, 4);
-    RunScript(ReleaseRight, 1);
-    RunScript(ReleaseDown, 4);
-    RunScript(ReleaseRight, 1);
-    RunScript(ReleaseUP, 4);
-    RunScript(ReleaseRight, 1);
-    RunScript(ReleaseDown, 4);
-    RunScript(ReleaseRight, 1);
-    RunScript(ReleaseUP, 4);
-    RunScript(ReleaseReset, 1);
+    char num = 1;
+    LOOP_START(6)
+    LOOP_START(4)
+    RunScript(Release, 1);
+    if (num)
+        RunScript(DOWN5, 1);
+    else
+        RunScript(UP5, 1);
+    LOOP_END
+    RunScript(Release, 1);
+    RunScript(RIGHT5, 1);
+    num = !num;
+    LOOP_END
 }
 
 //跳帧
 void Skipping()
 {
     if (SpeedUp)
-        SizeofPgm = GetDuration(SkipFast) * 31 * FrameNum / 30;
+        SizeofPgm = GetDuration(SkipFast) * (FrameNum / 30 * 31 + (FrameNum % 30));
     else
-        SizeofPgm = GetDuration(Skip) * 31 * FrameNum / 30;
-    SizeofPgm += SizeofSync + GetDuration(GotoSettings) + GetDuration(GotoGame);
+        SizeofPgm = GetDuration(Skip) * (FrameNum / 30 * 31 + (FrameNum % 30));
+    SizeofPgm += SizeofSync + GetDuration(GotoSettings);
     RunScript(Sync, 5);
     RunScript(GotoSettings, 1);
     LOOP_START((FrameNum / 30))
@@ -1768,7 +1790,19 @@ void Skipping()
     else
         RunScript(Skip, 31);
     LOOP_END
-    RunScript(GotoGame, 1);
+    if (FrameNum % 30 != 0)
+    {
+        LOOP_START((FrameNum % 30))
+        if (SpeedUp)
+        {
+            SkipMode = 1;
+            RunScript(SkipFast, 1);
+            SkipMode = 0;
+        }
+        else
+            RunScript(Skip, 1);
+        LOOP_END
+    }
     PROGRAM_END
 }
 
@@ -1830,9 +1864,9 @@ void Driving()
     }
     RunScript(Connect, 1);
     RunScript(ReadyToDrive, 1);
-    if (PasswordNum != 10000)
+    if (PasswordNum < 10010)
     {
-        if (PasswordNum == 10001)
+        if (PasswordNum >= 10000)
         {
             random = (int)rand();
         }
@@ -1893,24 +1927,57 @@ void Driving()
 //复制道具
 void Copying()
 {
+    switch (AutoRelease)
+    {
+    case 0:
+        SizeofPgm = SizeofCopy * (CopyNum * 43 / 30);
+        break;
+    case 1:
+        SizeofPgm = (SizeofCopy + GetDuration(CopyRelease) + GetDuration(OpenBox) + GetDuration(CloseBox)) * (CopyNum * 43 / 30);
+        break;
+    case 2:
+        SizeofPgm = SizeofCopy * (CopyNum * 43 / 30) + (SizeofRelease + GetDuration(OpenBox) + GetDuration(CloseBox)) * (CopyNum * 43 / 30 / 86);
+        break;
+    case 3:
+SizeofPgm = (SizeofCopy + (GetDuration(ChangeEgg) + GetDuration(OpenBox) + GetDuration(CloseBox))*2) * (CopyNum * 43 / 30);
+        break;
+    default:
+        break;
+    }
+    /*
     if (AutoRelease == 1)
         SizeofPgm = (SizeofCopy + GetDuration(CopyRelease) + GetDuration(OpenBox) + GetDuration(CloseBox)) * (CopyNum * 43 / 30);
     else if (AutoRelease == 2)
         SizeofPgm = SizeofCopy * (CopyNum * 43 / 30) + (SizeofRelease + GetDuration(OpenBox) + GetDuration(CloseBox)) * (CopyNum * 43 / 30 / 86);
     else
         SizeofPgm = SizeofCopy * (CopyNum * 43 / 30);
-    int num = 0;
+        */
+    char num = 0;
     LOOP_START((CopyNum * 43 / 30))
     num++;
     RunScript(CollectMove, 3);
+    RunScript(CollectLastMove, 1);
+
+    if (AutoRelease == 3)
+    {
+        RunScript(OpenBox, 1);
+        RunScript(ChangeEgg, 1);
+        RunScript(CloseBox, 1);
+    }
     RunScript(CopyGetEgg, 1);
+    if (AutoRelease == 3)
+    {
+        RunScript(OpenBox, 1);
+        RunScript(ChangeEgg, 1);
+        RunScript(CloseBox, 1);
+    }
     if (AutoRelease == 1)
     {
         RunScript(OpenBox, 1);
         RunScript(CopyRelease, 1);
         RunScript(CloseBox, 1);
     }
-    if (AutoRelease == 2 && num >= 86)
+    if (AutoRelease == 2 && num > 86)
     {
         RunScript(OpenBox, 1);
         ReleaseOperation();
@@ -1921,34 +1988,69 @@ void Copying()
     PROGRAM_END
 }
 
-//不常用功能
-void InfUsed()
+//连接交换
+void Exchanging()
+{
+    SizeofPgm = SizeofSync + (GetDuration(A30) * 300 + GetDuration(B30) * 30 + GetDuration(PAUSE5) * 300 + GetDuration(RIGHT5) * 6 + GetDuration(UP5) * 12 + GetDuration(DOWN5) * 12 + GetDuration(ReleaseReset) + 2220) * BoxNum;
+    RunScript(Sync, 5);
+    LOOP_START(BoxNum)
+    char num = 1;
+    LOOP_START(6)
+    LOOP_START(4)
+    RunScript(A30, 10);
+    RunScript(PAUSE5, 3);
+    RunScript(B30, 1);
+    RunScript(PAUSE5, 7);
+    RunStep(B, 2);
+    RunStep(PAUSE, 20);
+    RunStep(B, 2);
+    RunStep(PAUSE, 50);
+    if (num)
+        RunScript(DOWN5, 1);
+    else
+        RunScript(UP5, 1);
+    LOOP_END
+    RunScript(A30, 10);
+    RunScript(PAUSE5, 3);
+    RunScript(B30, 1);
+    RunScript(PAUSE5, 6);
+    RunStep(B, 2);
+    RunStep(PAUSE, 20);
+    RunStep(B, 2);
+    RunStep(PAUSE, 50);
+    RunScript(RIGHT5, 1);
+    num = !num;
+    LOOP_END
+    RunScript(ReleaseReset, 1);
+    LOOP_END
+    PROGRAM_END
+}
+
+//其他功能
+void Others()
 {
     RunScript(Sync, 5);
-    switch (InfUsedNum)
+    switch (OthersNum)
     {
     case 1: //连A
         PressA();
         break;
-    case 2: //连Y
-        PressY();
-        break;
-    case 3: //刷瓦特
+    case 2: //刷瓦特
         CollectWatt();
         break;
-    case 4: //刷树果
+    case 3: //刷树果
         CollectBerry();
         break;
-    case 5: //刷头饰
+    case 4: //刷头饰
         HeadwearBattle();
+        break;
+    case 5: //刷经验
+        PokeJob();
         break;
     case 6: //售货郎
         AutoSalesman();
         break;
-    case 7: //宝可帮帮忙
-        PokeJob();
-        break;
-    case 8: //洛托姆抽奖
+    case 7: //ID抽奖
         LuckDraw();
         break;
     default:
@@ -1965,20 +2067,16 @@ void PressA()
     LOOP_END
 }
 
-//连Y
-void PressY()
-{
-    LOOP_START(0)
-    RunStep(Y, 2);
-    RunStep(PAUSE, 5);
-    LOOP_END
-}
-
 //刷瓦特
 void CollectWatt()
 {
-    LOOP_START(0)
     RunScript(GetWatt, 1);
+    RunScript(Recruit, 1);
+    RunScript(GotoSettings, 1);
+    RunScript(Skip, 1);
+    RunScript(GotoGame, 1);
+    LOOP_START(0)
+    RunScript(NextRecruit, 1);
     RunScript(GotoSettings, 1);
     RunScript(Skip, 1);
     RunScript(GotoGame, 1);
@@ -2060,4 +2158,42 @@ void LuckDraw()
     RunScript(Skip, 1);
     RunScript(GotoGame, 1);
     LOOP_END
+}
+
+//动森功能
+void AnimalCrossing()
+{
+    RunScript(Sync, 5);
+    switch (AnimalCrossingNum)
+    {
+    case 1: //连A
+        PressA();
+        break;
+    case 2: //连Y
+        PressY();
+        break;
+    case 3: //刷动物
+        AnimalTravel();
+        break;
+    default:
+        break;
+    }
+}
+
+//连Y
+void PressY()
+{
+    LOOP_START(0)
+    RunStep(Y, 2);
+    RunStep(PAUSE, 5);
+    LOOP_END
+}
+
+//动森旅行
+void AnimalTravel()
+{
+    LOOP_START(1)
+    RunScript(Travel, 1);
+    LOOP_END
+    PROGRAM_END
 }
