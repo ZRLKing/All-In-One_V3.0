@@ -1939,7 +1939,7 @@ void Copying()
         SizeofPgm = SizeofCopy * (CopyNum * 43 / 30) + (SizeofRelease + GetDuration(OpenBox) + GetDuration(CloseBox)) * (CopyNum * 43 / 30 / 86);
         break;
     case 3:
-SizeofPgm = (SizeofCopy + (GetDuration(ChangeEgg) + GetDuration(OpenBox) + GetDuration(CloseBox))*2) * (CopyNum * 43 / 30);
+        SizeofPgm = (SizeofCopy + (GetDuration(ChangeEgg) + GetDuration(OpenBox) + GetDuration(CloseBox)) * 2) * (CopyNum * 43 / 30);
         break;
     default:
         break;
@@ -2192,8 +2192,9 @@ void PressY()
 //动森旅行
 void AnimalTravel()
 {
-    LOOP_START(1)
     RunScript(Travel, 1);
+    LOOP_START(0)
+    RunStep(B, 200);
     LOOP_END
     PROGRAM_END
 }
